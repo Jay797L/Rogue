@@ -1,247 +1,295 @@
 # Project Team 01 — Python_Bootcamp
 
-Резюме: в этом командном проекте тебе предстоит разработать консольное игровое roguelike-приложение на языке программирования Python с использованием библиотеки curses в духе классической игры Rogue 1980 года разработки.
+**Summary:** In this team project, you'll develop a console-based roguelike game application in the Python programming language using the curses library, inspired by the classic 1980 game Rogue.
 
-💡 [Нажми сюда](https://new.oprosso.net/p/4cb31ec3f47a4596bc758ea1861fb624), **чтобы поделиться с нами обратной связью на этот проект**. Это анонимно и поможет нашей команде сделать обучение лучше. Рекомендуем заполнить опрос сразу после выполнения проекта.
+💡 [Click here](https://new.oprosso.net/p/4cb31ec3f47a4596bc758ea1861fb624) to give us feedback on this project. It’s anonymous and helps us improve the course. We recommend filling out the survey right after completing the project.
 
-## Содержание
- 1. [Chapter I](#chapter-i)   
-     - [Инструкция](#инструкция)   
- 2. [Chapter II](#chapter-ii)  
-     - [Общая информация](#общая-информация) 
-         - [Rogue 1980](#rogue-1980)  
-         - [Архитектура приложения](#архитектура-приложения)   
- 3. [Chapter III](#chapter-iii)      
-     - [Задание 0. Как мы здесь очутились?](#задание-0-как-мы-здесь-очутились)  
-     - [Задание 1. Сущностные сущности игровой игры](#задание-1-сущностные-сущности-игровой-игры)  
-     - [Задание 2. Бодрый геймплей](#задание-2-бодрый-геймплей)  
-     - [Задание 3. Сгенерированный мир](#задание-3-сгенерированный-мир)  
-     - [Задание 4. Ламповое 2D](#задание-4-ламповое-2d)  
-     - [Задание 5. Картридж с батарейкой](#задание-5-картридж-с-батарейкой)  
-     - [Задание 6. Дополнительно. Ты не пройдешь!](#задание-6-дополнительно-ты-не-пройдешь)  
-     - [Задание 7. Дополнительно. Искусство баланса](#задание-7-дополнительно-искусство-баланса)  
-     - [Задание 8. Дополнительно. Представь, что ты стол](#задание-8-дополнительно-представь-что-ты-стол)  
-     - [Задание 9. Дополнительно. Полное ТРИ-ДЭ](#задание-9-дополнительно-полное-три-дэ)  
+## Table of Contents
 
-         
+  - [Chapter I](#chapter-i)
+    - [Instructions](#instructions)
+  - [Chapter II](#chapter-ii)
+    - [General Information](#general-information)
+      - [Rogue 1980](#rogue-1980)
+      - [Application Architecture](#application-architecture)
+  - [Chapter III](#chapter-iii)
+    - [Task 0 — How Did We Get Here?](#task-0--how-did-we-get-here)
+    - [Task 1 — The Essential Essences of the Game](#task-1--the-essential-essences-of-the-game)
+    - [Task 2 — Energetic Gameplay](#task-2--energetic-gameplay)
+    - [Task 3 — Procedural World](#task-3--procedural-world)
+    - [Task 4 — Cozy 2D](#task-4--cozy-2d)
+    - [Task 5 — Cartridge With a Battery](#task-5--cartridge-with-a-battery)
+    - [Bonus Task 6 — You Shall Not Pass!](#bonus-task-6--you-shall-not-pass)
+    - [Bonus Task 7 — The Art of Balance](#bonus-task-7--the-art-of-balance)
+    - [Bonus Task 8 — Imagine You’re a Table](#bonus-task-8--imagine-youre-a-table)
+    - [Bonus Task 9 — Full 3D](#bonus-task-9--full-3d)
 
-## Chapter I
-## Инструкция
 
-1. На протяжении всего курса тебя будет сопровождать чувство неопределенности и острого дефицита информации — это нормально. Не забывай, что информация в репозитории и Google всегда с тобой. Как и пиры, и Rocket.Chat. Общайся. Ищи. Опирайся на здравый смысл. Не бойся ошибиться.
-2. Будь внимателен к источникам информации. Проверяй. Думай. Анализируй. Сравнивай. 
-3. Внимательно читай задания. Перечитай несколько раз. 
-4. Читать примеры тоже лучше внимательно. В них может быть что-то, что не указано в явном виде в самом задании.
-5. Тебе могут встретиться несоответствия, когда что-то новое в условиях задачи или примере противоречит уже известному. Если встретилось такое — попробуй разобраться. Если не получилось — запиши вопрос в открытые вопросы и выясни в процессе работы. Не оставляй открытые вопросы неразрешенными. 
-6. Если задание кажется непонятным или невыполнимым — так только кажется. Попробуй его декомпозировать. Скорее всего, отдельные части станут понятными. 
-7. На пути тебе встретятся разные задания. Бонусные задания подходят для самых дотошных и пытливых. Эти задания с повышенной сложностью и необязательны к выполнению, но если ты их сделаешь, то получишь дополнительный опыт и знания.
-8. Не пытайся обмануть систему и окружающих. В первую очередь ты обманешь себя.
-9. Есть вопрос? Спроси соседа справа. Если это не помогло — соседа слева.
-10. Когда пользуешься помощью — всегда разбирайся до конца: почему, как и зачем. Иначе помощь не будет иметь смысла.
-11. Всегда делай push только в ветку develop! Ветка master будет проигнорирована. Работай в директории src.
-12. В твоей директории не должно быть иных файлов, кроме тех, что обозначены в заданиях.
+## Chapter I 
+### Instructions
 
-## Chapter II
-## Общая информация
+1. Throughout the course, you’ll often feel uncertain and short on information — that’s part of the experience. Remember: the repository and Google are always with you. So are your peers and Rocket.Chat. Talk. Search. Use common sense. Don’t be afraid to make mistakes.
+2. Be mindful of your sources. Cross-check. Think critically. Analyze. Compare.
+3. Read the tasks carefully — and then read them again.
+4. Examples are worth close attention too. They might include things not explicitly stated in the task itself.
+5. You might come across inconsistencies — when something in the task or example contradicts what you thought you knew. Try to figure it out. If you can’t, write it down as an open question and resolve it as you go. Don’t leave questions unresolved.
+6. If a task seems unclear or impossible — it probably just feels that way. Break it down into parts. Most of them will make sense on their own.
+7. You’ll encounter all kinds of tasks. The bonus ones are for the curious and detail-oriented. They’re optional and more challenging — but completing them gives you extra experience and insight.
+8. Don’t try to cheat the system or your peers. In the end, you’ll only be cheating yourself.
+9. Got a question? Ask the peer to your right. If that doesn’t help — ask the one to your left.
+10. When getting help — always make sure you understand the why, how, and what for. Otherwise, the help won’t mean much.
+11. Always push your code to the develop branch only! The master branch will be ignored. Work inside the src directory.
+12. Your directory must not contain any files other than those explicitly required by the tasks.
 
-### Rogue 1980
+## Chapter II 
+### General Information
+
+#### Rogue 1980
 
 ![RogueMap](misc/images/rogue-map-2.png)
 
 ![Dungeon](misc/images/dungeon.png)
 
-Rogue (разбойник, плут) — компьютерная игра, разработанная в 1980 году компанией Epyx. Ее основной темой является исследование подземелий. Игра была необычайно популярной на университетских Unix-системах в начале 1980-х годов и породила целый жанр, известный как Roguelike (Rogue-подобные игры, т. н. «Рогалики»).
+Rogue — short for "rogue" or "scoundrel" — is a computer game developed in 1980 by Epyx. Its core theme is dungeon exploration. Hugely popular on university Unix systems in the early 1980s, Rogue gave birth to an entire genre of games known as roguelikes.
 
-В Rogue игрок выполняет типичную для ранних фэнтезийных ролевых игр роль искателя приключений. Игра начинается на самом верхнем ярусе не нанесенного на карту подземелья с большим количеством монстров и сокровищ. Постепенно по мере продвижения вглубь случайно сгенерированного подземелья, возрастает сила монстров и продвижение усложняется.
+In Rogue, the player takes on the classic fantasy RPG role of an adventurer. The game begins on the uppermost level of an unmapped dungeon filled with monsters and treasures. As the player progresses deeper into the randomly generated dungeon, the enemies grow stronger, and the challenge intensifies.
 
-Всякий ярус подземелья состоит из сетки 3х3 комнаты или тупикового коридора, в конце которого можно было бы ожидать комнату. Более поздние варианты также включают вместе с комнатами «лабиринты», извилистые коридоры с тупиками. В отличие от большинства приключенческих игр того времени, расположение подземелья и расположение объектов в нем генерировалось случайным образом. Таким образом, каждое прохождение игры становилось уникальным и в равной степени рискованным как для новичков, так и для опытных игроков.
+Each dungeon level consists of a 3×3 grid of rooms or dead-end corridors that might otherwise have led to a room. Later versions of the game added “mazes” — winding, dead-end-filled corridors — alongside traditional rooms. Unlike most adventure games of that era, Rogue used procedural generation to create the dungeon layout and item placement, making every playthrough unique and equally risky for both newcomers and seasoned players.
 
-У игрока есть 3 характеристики: здоровье, физическая сила и опыт. Все 3 характеристики можно как и увеличить с помощью различных зелий и свитков, так и уменьшить, наступив на ловушку или прочитав проклятый свиток. Большой выбор магических зелий, свитков, волшебных жезлов, оружия, брони и еды приводит к высокому разнообразию игры и различным способам выиграть или проиграть. 
+The player has three main attributes: health, strength, and experience. All three can be increased by using potions or scrolls, or decreased by stepping on traps or reading cursed scrolls. A wide variety of magical potions, scrolls, wands, weapons, armor, and food results in rich, diverse gameplay with many different paths to victory or defeat.
 
-### Архитектура приложения
-При реализации прикладных проектов с данными, бизнес-логикой и пользовательским интерфейсом, как правило, используется многослойная архитектура. Классическое стандартное разделение может быть представлено так:
-- Слой представления (Presentation, View, UI);
-- Слой бизнес-логики (Domain, Business Logic);
-- Слой доступа к данным (Data Source, Data Access).
+#### Application Architecture
 
-Разделение логики на бизнес и презентационные слои поможет легче организовать логику в приложении и разделить компоненты с разной устойчивостью. 
+When building applied projects that involve data, business logic, and user interfaces, it’s common to use a multi-layered architecture. A typical structure includes:
 
-Так, в слое **presentation** необходимо разместить код, который будет организовывать логику отображения на экране пользователя и ввод пользовательских данных. То есть здесь должно быть отражено взаимодействие с компонентами библиотеки curses и Domain-уровнем. 
+- **Presentation Layer** (View, UI)
+- **Domain Layer** (Business Logic)
+- **Data Layer** (Data Access, Data Source)
 
-Слой **domain** должен отражать бизнес-логику приложения, не связанную с фреймворками. В текущем проекте это определение логики сущностей, связанных с игрой — сама игра, игрок, противник, уровни, карта и другие, а также логика игрового процесса. Так, местоположение игрока и логика изменения положения игрока в числовых характеристиках на карте должны быть отражены в этом слое и затем переданы для отображения в *presentation*-слой. Обрати внимание, что в соответствии с концепцией чистой архитектуры, слой бизнес-логики не должен зависеть от остальных слоев. Для того чтобы этого добиться, необходимо использовать принцип инверсии зависимостей.
+Separating business logic from presentation logic makes it easier to structure your application and decouple components with different levels of stability.
 
-Для удобной организации взаимодействия между слоями также можно воспользоваться практикой семейства паттернов **MVC** (**MVP**, **MVVM**, **MVPVM** и др.), где слои логики приложения (**Model**) связываются со слоями представления (**View**) при помощи специальных «связочных» служебных слоев (**Controller**, **Presenter**, **View Model** и др.). В разных языках программирования и фреймворках устоялись свои предпочтительные способы формализации и связывания таких слоев, но принцип часто очень схожий.
+The **presentation layer** should contain code responsible for displaying content on the user’s screen and handling user input. In this project, that includes interactions between the curses library and the domain layer.
 
-Слой **datalayer** в приложении должен будет отвечать за работу с данными. В данном случае — за хранение истории прошлых игр, а также хранение данных о текущей игровой сессии.
+The **domain layer** defines the core game logic, independent of any frameworks. This includes the main entities of the game — such as the game itself, the player, enemies, levels, the map, and so on — as well as game mechanics. For example, the player's position and the logic for updating numeric attributes on the map should live in this layer and then be passed to the presentation layer for rendering.
+
+Note that, following the principles of **clean architecture**, the domain layer must not depend on any other layers. This is achieved using the **dependency inversion principle**.
+
+To organize communication between layers more effectively, you may also adopt one of the **MVC family patterns** (like MVP, MVVM, or MVPVM). These approaches connect the logic layer (Model) and the presentation layer (View) through intermediary service layers (Controller, Presenter, ViewModel, etc.). Different languages and frameworks may favor different implementations, but the underlying principles remain similar.
+
+The **data layer** in this project is responsible for managing data — including saving the history of previous runs and the state of the current game session.
 
 ## Chapter III
 
-## Задание 0. Как мы здесь очутились?
+## Task 0 — How Did We Get Here?
 
-Игровое приложение:
- - должно быть реализовано на языке Python версии 3.10;
- - должно иметь консольный интерфейс на базе библиотеки curses;
- - должно управляться с клавиатуры;
- - должно иметь продуманную, чистую архитектуру с четким разделением на слои;
- - должно реализовать логику классической игры Rogue 1980 года с рядом упрощений (конкретные требования к игровым механикам описаны в следующих разделах);
- - если какие-то детали организации игрового процесса не покрыты настоящим текстом, то допустимо опираться на логику оригинальной механики 1980 года.
+The game application must:
 
-## Задание 1. Сущностные сущности игровой игры
-Игра должна поддерживать разделение слоев, описанное в разделе «Архитектура приложения». В игре должны быть выделены слои: домена и геймплея, рендеринга и работы с данными.
+- be implemented in **Python 3.10**;
+- use a **console interface** based on the curses library;
+- be fully **keyboard-controlled**;
+- follow a **well-structured, clean architecture** with clearly separated layers;
+- implement the core mechanics of the classic **Rogue (1980)** game, with some simplifications (specific gameplay requirements are described in the following tasks);
+- where the gameplay design is not explicitly defined in this document, you may refer to the logic of the original 1980 version as a valid fallback.
 
-Для начала разработки игры реализуй доменный слой, в котором будут описаны основные игровые сущности. Основные рекомендуемые сущности с базовыми атрибутами (необходимый, но недостаточный перечень):
-- Игровая сессия;
-- Уровень;
-- Комната;
-- Коридор;
-- Персонаж:
-  + максимальный уровень здоровья,
-  + здоровье,
-  + ловкость,
-  + сила,
-  + текущее оружие;
-- Рюкзак;
-- Противник:
-  + тип,
-  + здоровье,
-  + ловкость,
-  + сила,
-  + враждебность;
-- Предмет:
-  + тип,
-  + подтип,
-  + здоровье (количество единиц повышения, для еды),
-  + максимальный уровень здоровья (количество единиц повышения, для свитков и эликсиров, вместе с этим повышается и сам уровень здоровья),
-  + ловкость (количество единиц повышения, для свитков и эликсиров),
-  + сила (количество единиц повышения, для свитков, эликсиров и оружия),
-  + стоимость (для сокровищ).
+## Task 1 — The Essential Essences of the Game
 
-## Задание 2. Бодрый геймплей
-Реализуй геймплей игры в уровне **domain** независимо от **presentation** и **datalayer**.
+The game must follow the layer separation described in the Application Architecture section. It should clearly separate the domain and gameplay layers, the rendering layer, and the data layer.
 
-### Логика игры
-- Игра должна содержать 21 уровень с подземельями.
-- Каждый уровень подземелья должен состоять из 9 комнат, соединенных коридорами, из любой комнаты по этим коридорам можно попасть в любую другую.
-- В каждой комнате могут находиться противники и предметы, за исключением стартовой комнаты.
-- Игрок управляет перемещением персонажа, может взаимодействовать с предметами и сражаться с противниками.
-- Цель игрока — найти на каждом уровне переход на следующий уровень и, таким образом, пройти 21 уровень.
-- На каждом уровне игрок начинает в случайной позиции стартовой комнаты, где гарантированно отсутствуют противники.
-- После смерти главного героя состояние игры сбрасывается и все возвращается к началу.
-- С каждым новым уровнем повышается количество и сложность противников, снижается количество полезных предметов и повышается количество сокровищ, которые выпадают с побежденных противников.
-- После любого прохождения (успешного и нет) результат игрока фиксируется в таблицу рекордов, где указывается достигнутый уровень подземелья и количество собранных сокровищ. Таблица рекордов должна сортироваться по количеству сокровищ.
-- Вся игра должна работать в пошаговом режиме (каждое действие игрока запускает действия противников), пока игрок не сделал ход, весь мир стоит в ожидании.
+To start development, implement the **domain layer**, which defines the game’s core entities. The list below includes the **recommended** entities and their **basic attributes** (this is a required but non-exhaustive list):
 
-### Логика персонажа
-- Характеристика здоровья персонажа должна показывать его текущий уровень здоровья, и когда здоровье персонажа достигает 0 или становится меньше 0, игра должна закончиться.
-- Характеристика максимального уровня здоровья должна показывать максимальный уровень здоровья персонажа, который может быть восстановлен путем употребления еды.
-- Характеристика ловкости должна участвовать в формуле вычисления вероятности попадания противников по персонажу и персонажа по противникам.
-- Характеристика силы должна определять базовый урон, наносимый персонажем без оружия, а также должна участвовать в формуле вычисления урона при использовании оружия.
-- За победу над противником персонаж получает количество сокровищ, зависящее от сложности противника.
-- Персонаж может поднимать предметы и складывать в свой рюкзак, а затем использовать их.
-- Каждый предмет при использовании может временно или постоянно изменять одну из характеристик персонажа.
-- Достигнув выхода из уровня, персонаж автоматически попадает на следующий уровень.
+- **Game session**
+- **Level**
+- **Room**
+- **Corridor**
+- **Character**, with:
+  + maximum health
+  + current health
+  + dexterity
+  + strength
+  + current weapon
+- **Backpack**
+- **Enemy**, with:
+  + type
+  + health
+  + dexterity
+  + strength
+  + hostility
+- **Item**, with:
+  + type
+  + subtype
+  + health (number of health points restored, for food)
+  + maximum health (points increased by scrolls or elixirs — also increases current max health)
+  + dexterity (points increased by scrolls or elixirs)
+  + strength (points increased by scrolls, elixirs, or weapons)
+  + value (for treasure)
 
-### Логика противников
-- Каждый противник имеет аналогичные игроку характеристики здоровья, ловкости и силы, дополнительно к этому имеет характеристику враждебности.
-- Характеристика враждебности определяет расстояние, с которого противник начинает преследовать игрока.
-- 5 видов противников: 
-  + Зомби (отображение: зеленый z): низкая ловкость; средняя сила, враждебность; высокое здоровье. 
-  + Вампир (отображение: красная v): высокая ловкость, враждебность и здоровье; средняя сила. Отнимает некоторое количество максимального уровня здоровья игроку при успешной атаке. Первый удар по вампиру — всегда промах. 
-  + Привидение (отображение: белый g): высокая ловкость; низкая сила, враждебность и здоровье. Постоянно телепортируется по комнате и периодически становится невидимым, пока игрок не вступил в бой. 
-  + Огр (отображение: желтый O): ходит по комнате на две клетки. Очень высокая сила и здоровье, но после каждой атаки отдыхает один ход, затем гарантированно контратакует; низкая ловкость; средняя враждебность.
-  + Змей-маг (отображение: белая s): очень высокая ловкость. Ходит по карте по диагонали, постоянно меняя сторону. У каждой успешной атаки есть вероятность «усыпить» игрока на один ход. Высокая враждебность.
-- Каждый тип противников имеет свой паттерн для передвижения по комнате.
-- Когда начинается преследование игрока, все монстры двигаются по одному паттерну, кратчайшим путем по соседним клеткам в сторону игрока.
-- Если игрок находится в области, когда монстр должен начать его преследовать, но при этом не существует пути к нему, то монстр продолжает двигаться случайным образом по своему паттерну.
+## Task 2 — Energetic Gameplay
 
-### Логика окружения
-- Каждый тип предмета имеет свое значение:
-  + сокровища (имеют стоимость, накапливаются и влияют на итоговый рейтинг, можно получить только при победе над монстром);
-  + еда (восстанавливает здоровье на некоторую величину);
-  + эликсиры (временно повышают одну из характеристик: ловкость, силу, максимальное здоровье);
-  + свитки (постоянно повышают одну из характеристик: ловкость, силу, максимальное здоровье);
-  + оружие (имеют характеристику силы, при использовании оружия меняется формула вычисления наносимого урона).
-- При повышении максимального уровня здоровья сама величина здоровья увеличивается на ту же величину.
-- Если после окончания действия эликсира здоровье становится равным 0 или ниже 0, необходимо установить игроку минимально возможную величину здоровья для продолжения игры.
-- Рюкзак хранит в себе все типы предметов.
-- Когда персонаж наступает на предмет, он автоматически должен добавляться в рюкзак, если он неполон (в рюкзаке может храниться максимум 9 предметов каждого типа, сокровища копятся и хранятся в единственной ячейке).
-- Еда, эликсиры, свитки при использовании тратятся.
-- Оружие при смене должно падать на пол на соседнюю клетку.
-- Каждый уровень подземелья имеет наполнение, зависящее от своего индекса: 
-  + Чем глубже уровень, тем он сложнее.
-  + Уровень состоит из комнат.
-  + Комнаты соединены коридорами.
-  + Комнаты содержат противников и предметы.
-  + Противники и персонаж могут перемещаться по комнатам и коридорам.
-  + Каждый уровень имеет гарантированный переход на следующий уровень.
-  + Выход из последнего уровня завершает игру.
+Implement the game’s core mechanics within the **domain layer**, independent of the presentation and data layers.
 
-### Логика боя
-- Бой вычисляется в пошаговом режиме.
-- Атака производится путем перемещения персонажа по направлению к противнику.
-- Инициация боя происходит при контакте с врагом.
-- Удары просчитываются по очереди, в несколько этапов: 
-  + 1 этап расчета удара — проверка на попадание. Проверка на попадание случайна и высчитывается из ловкости бьющего и цели удара.
-  + 2 этап — расчет урона. Рассчитывается из силы и модификаторов (оружия).
-  + 3 этап — применение урона. Урон вычитается из здоровья. Если здоровье падает до 0 или ниже, то противник или персонаж погибает.
-- Из каждого противника при победе выпадает случайное количество сокровищ, зависящее от враждебности, силы, ловкости и здоровья противника.
+### Gameplay Logic
 
-## Задание 3. Сгенерированный мир
-Реализуй модуль генерации уровней в уровне **domain**.
+- The game must include **21 dungeon levels**.
+- Each level should consist of **9 rooms** connected by **corridors** — every room must be accessible from any other via these corridors.
+- Each room may contain **enemies and items**, except for the **starting room**.
+- The player controls the **movement** of the character, can **interact with items**, and **fight enemies**.
+- The goal is to **find the exit** to the next level on each floor and **advance through all 21 levels**.
+- On each level, the player starts in a **random position** within the starting room, which is **guaranteed to be free of enemies**.
+- If the main character dies, the game state is **reset**, and everything starts from the beginning.
+- With each new level: **enemy quantity and difficulty increase**, the **availability of useful items decreases**, and the **amount of treasure dropped by defeated enemies increases**.
+- After every run — whether completed or not — the player’s result is saved in a **high score table**, which includes: the **deepest level reached**, the **amount of treasure collected**. The table must be **sorted by treasure collected**.
+- The entire game must be **turn-based**: each player action triggers enemy actions. Until the player makes a move, the game world remains idle.
 
-- Каждый уровень должен быть логически разделен на 9 секций, в каждой из которых случайным образом генерируется комната с произвольным размером и положением.
-- Комнаты произвольным образом соединены коридорами. Коридоры имеют свою геометрию, по ним тоже можно ходить, а значит, их координаты необходимо генерировать и хранить. При генерации необходимо проверять, что сгенерированный граф комнат — связный и не имеет ошибок.
-- На каждом уровне одна комната помечена как стартовая, и еще одна — как конечная. В стартовой комнате начинается игровая сессия, а в конечной располагается блок, при прикосновении к которому игрок перемещается на следующий уровень.
-- Пример реализации генерации уровней представлен в папке code-samples.
+### Character Logic
 
-## Задание 4. Ламповое 2D
-Реализуй с curses рендеринг игры в **presentation**-слое, используя необходимые сущности **domain**.
+- The **health attribute** reflects the character’s current health. If health drops to **0 or below**, the game ends.
+- The **maximum health attribute** defines the character’s health cap, which can be **restored by consuming food**.
+- The **dexterity attribute** affects the **hit chance formula** — both for enemies attacking the character and vice versa.
+- The **strength attribute** determines the **base damage** dealt by the character when unarmed, and is also a factor in **damage calculations with weapons**.
+- Upon defeating an enemy, the character receives a number of **treasure points**, depending on the enemy’s difficulty.
+- The character can **pick up items** and **store them in a backpack**, then **use them later**.
+- Each item, when used, can **modify the character’s attributes**, either **temporarily** or **permanently**.
+- When the character reaches a level’s exit, they are **automatically moved** to the next level.
 
-### Отображение 
-- Рендеринг среды — стены, пол, проем в стене, коридоры между комнатами.
-- Рендеринг акторов — персонаж, противники, подбираемые предметы.
-- Рендеринг интерфейса — отображение игрового интерфейса (панель статуса, инвентаря, простое меню).
-- Туман войны — зависимость рендеринга сцены от состояния игры:
-  + Неизведанные комнаты и коридоры не отображаются.
-  + Просмотренные комнаты, но в которых не находится игрок, отображаются только как стены.
-  + В комнате, в которой находится игрок, отображаются стены, пол, акторы и предметы.
-  + При нахождении в непосредственной близости с комнатой со стороны коридора туман войны рассеивается только на области прямой видимости (применяется алгоритм Ray Casting и алгоритм Брезенхэма для определения видимой области).
-- Пример реализации рендеринга уровней представлен в папке code-samples.
+### Enemy Logic
 
-### Управление
-- Управление персонажем:
-  + Передвижение при помощи клавиш WASD.
-  + Применение оружия из рюкзака при помощи кнопки h.
-  + Применение еды из рюкзака при помощи кнопки j.
-  + Применение эликсира из рюкзака при помощи кнопки k.
-  + Применение свитка из рюкзака при помощи e.
-- Любое использование чего-либо из рюкзака должно приводить к печати списка предметов этого типа на экран с вопросом игроку, что нужно выбрать (1–9).
-- При выборе оружия также должна иметься возможность убрать оружие из рук, не выбрасывая из инвентаря (соответственно, для оружия выбор будет 0–9).
+- Each enemy has attributes similar to the player’s: **health**, **dexterity**, and **strength**. In addition, each enemy has a **hostility** attribute.
+- The **hostility** value determines the **distance** at which the enemy starts **chasing the player**.
 
-### Статистика
-- В игре собирается и отображается в отдельном представлении статистика всех прохождений, отсортированная по количеству набранных сокровищ: количество сокровищ, достигнутый уровень, количество побежденных противников, количество съеденной еды, количество выпитых эликсиров, количество прочитанных свитков, количество нанесенных и пропущенных ударов, количество пройденных клеток.
+#### There are 5 enemy types:
 
-## Задание 5. Картридж с батарейкой
-Реализуй слой **datalayer**, в котором будет производиться сохранение и извлечение данных об игровом прогрессе игрока в файле ``json``.
-- После прохождения каждого уровня необходимо сохранять полученную статистику и номер пройденного уровня.
-- После перезапуска игры, если игрок хочет продолжить последнюю сохраненную сессию, уровни должны генерироваться в соответствии с сохраненной информацией, а прогресс игрока — полностью восстанавливаться (набранные очки, текущие значения характеристик), т. е. должна быть восстановлена вся информация об игровой сессии вплоть до расположения отдельных сущностей и их характеристик.
-- Также должна сохраняться статистика по всем попыткам прохождений, и при просмотре игроком таблицы лидеров должны отображаться лучшие попытки прохождения (необязательно успешные).
+- **Zombie** (displayed as green z): low dexterity, medium strength and hostility, high health.
+- **Vampire** (displayed as red v): high dexterity, hostility, and health, medium strength. Steals some of the player's **maximum health** on a successful attack. The **first attack** against a vampire **always misses**.
+- **Ghost** (displayed as white g): high dexterity, low strength, hostility, and health. Constantly **teleports** within the room and periodically becomes **invisible** until combat begins.
+- **Ogre** (displayed as yellow O): moves **two tiles per turn** within the room. Very high strength and health. **Rests for one turn after every attack**, then **guaranteed counterattacks.** Low dexterity, medium hostility.
+- **Snake Mage** (displayed as white s): very high dexterity. Moves **diagonally**, constantly switching direction. Each successful attack has a chance to **put the player to sleep for one turn.** High hostility.
+- Each enemy type has its own **movement pattern** within rooms.
+- Once an enemy **starts chasing the player**, all monsters follow the same behavior: they **move toward the player along the shortest path** using adjacent tiles.
+- If the player enters a monster’s **aggression range**, but there is **no valid path** to the player, the monster continues **moving randomly** according to its own pattern.
 
-## Задание 6. Дополнительно. Ты не пройдешь!
-- Сгенерируй двери между комнатами и коридорами и ключи к ним. Необходимо реализовать систему разноцветных ключей наподобие классической DOOM. 
-- При решении задачи необходимо использовать модифицированные алгоритмы поиска в глубину/ширину для проверки доступности ключей и валидности генерации на отсутствие софтлоков.
+### Environment Logic
 
-## Задание 7. Дополнительно. Искусство баланса
-- Добавь систему автоматической подстройки под уровень игрока. Если игрок легко проходит уровни, необходимо увеличивать сложность. Если игрок сталкивается с трудностями, можно добавлять немного больше полезных для игрока предметов (например, если игрок часто тратит здоровье — предоставлять больше аптечек) и понизить количество и сложность врагов.
+- Each **item type** has a specific function:
+  - **Treasure** — has a value, accumulates, and affects the final score. Can only be obtained by **defeating enemies**.
+  - **Food** — restores **health** by a certain amount.
+  - **Elixirs** — **temporarily increase** one attribute (dexterity, strength, or max health).
+  - **Scrolls** — **permanently increase** one attribute (dexterity, strength, or max health).
+  - **Weapons** — have a **strength attribute** and modify the damage formula when used.
+- When maximum health increases, the **current health also increases** by the same amount.
+- If an elixir effect ends and the player's **health drops to 0 or below**, it must be reset to the **minimum possible positive value** to allow the game to continue.
+- The **backpack** stores all item types.
+- When the character **steps on an item**, it is **automatically added** to the backpack if there’s room (up to **9 items per type**; treasure stacks in a single slot).
+- **Food, elixirs, and scrolls** are **consumed on use**.
+- **Weapons**, when unequipped, are **dropped onto a neighboring tile**.
 
-## Задание 8. Дополнительно. Представь, что ты стол
-- Добавь в игру противника Мимик (белая m), который имитирует предметы. Высокая ловкость, низкая сила, высокое здоровье и низкая враждебность. 
+#### Dungeon Level Structure:
 
-## Задание 9. Дополнительно. Полное ТРИ-ДЭ
-- Добавь режим 3D-рендеринга, в котором:
-  + Основной вид переключается на 3D-вид от первого лица.
-  + 2D-вид остается в режиме мини-карты в углу экрана.
-  + Управление меняется соответствующим образом: W — перед, S — назад, A — поворот налево, D — поворот направо.
-- Для 3D-рендеринга комнат и коридоров используй алгоритм Ray Casting и библиотеку curses.
-- Стены комнат и туннелей должны иметь текстуру, чтобы перемещение персонажа было заметным.
-- Пример реализации 3D-рендеринга уровней представлен в папке code-samples.
+- The **deeper** the level, the **more difficult** it becomes.
+- Each level consists of **rooms**, connected by **corridors**.
+- **Rooms** contain **enemies and items**.
+- Both **enemies and the player** can move between rooms and corridors.
+- Each level has a **guaranteed exit** to the next level.
+- Reaching the **exit of the final level** ends the game.
+
+### Combat Logic
+
+- Combat is resolved in a **turn-based** manner.
+- An attack is triggered when the **player moves toward an enemy**.
+- Combat is **initiated upon contact** with an enemy.
+- Attacks are resolved **step-by-step, in turns**:
+    1. **Hit check** — determines whether the attack lands. The result is random and depends on the **attacker’s dexterity** and the **target’s dexterity**.
+    2. **Damage calculation** — based on the **attacker’s strength** and **weapon modifiers** (if applicable).
+    3. **Apply damage** — subtract the damage from the target’s health. If health drops to **0 or below**, the target dies.
+- Upon defeating an enemy, the player receives a **random amount of treasure**, based on the enemy’s **hostility, strength, dexterity, and health**.
+
+## Task 3 — Procedural World
+
+Implement a **level generation module** within the **domain** layer.
+
+- Each level must be **logically divided into 9 sections**. Within each section, a **room is generated randomly**, with arbitrary **size and position**.
+- Rooms are connected by **randomly generated corridors**. Corridors have their own **geometry** and are **walkable**, meaning their **coordinates must be generated and stored**. The generator must ensure the resulting **graph of rooms is connected** and contains **no errors**.
+- Each level must include one **starting room** (where the game session begins) and one **exit room**, which contains a **portal or tile** that moves the player to the next level upon contact.
+- An example implementation of level generation can be found in the code-samples folder.
+
+## Task 4 — Cozy 2D
+
+Implement the **game rendering** using the curses library within the **presentation layer**, leveraging the necessary **domain entities**.
+
+### Rendering Requirements
+
+- **Environment rendering** — display **walls, floors, doorways**, and **corridors** connecting rooms.
+- **Actor rendering** — display the **player**, **enemies**, and **collectible items**.
+- **UI rendering** — display the **game interface**, including a **status panel**, **inventory**, and a **simple menu**.
+
+### Fog of War Logic
+
+Rendering behavior depends on the player’s state and visibility:
+
+- **Unexplored** rooms and corridors are **not rendered**.
+- **Discovered but unoccupied** rooms appear **only as walls**.
+- The room currently occupied by the player displays **walls, floors, actors, and items**.
+- When near a room but still in a **corridor**, only the **line-of-sight area** is revealed using **ray casting** and the **Bresenham algorithm** for visibility determination.
+
+An example implementation of level rendering is available in the code-samples folder.
+
+### Controls
+
+**Player Movement and Actions:**
+
+- Move using the **WASD** keys.
+- Use a **weapon** from the backpack — press h.
+- Use **food** — press j.
+- Use an **elixir** — press k.
+- Use a **scroll** — press e.
+
+**Item Selection:**
+
+- Using any item from the backpack should **display a list of items** of that type on screen, **prompting the player to select** one (slots **1–9**).
+- When selecting a weapon, the player should also have the option to **unequip the current weapon without dropping it**. Therefore, weapon selection must allow choices from **0–9**, where **0** means "empty hands".
+
+### Statistics
+
+The game collects and displays a **separate statistics view** showing data from all playthroughs, **sorted by total treasure collected**.  
+The following data points should be tracked: amount of **treasure collected**, l**evel reached**, number of **enemies defeated,** amount of **food consumed,** number of **elixirs used,** number of **scrolls read,** number of **attacks made** and **hits taken,** number of **tiles traversed.**
+
+## Task 5 — Cartridge With a Battery
+
+Implement the **datalayer** responsible for **saving and loading game progress** to a ``.json`` file.
+
+**Requirements:**
+
+- After completing each level, the game must **save the current stats and level number**.
+- Upon restarting the game, if the player chooses to **resume the last saved session**, levels must be **regenerated based on saved data**, and the **entire game state** must be restored. This includes all collected points, **current character attributes**, and **positions and states of all entities**.
+- The game must also **persist the statistics** of all playthroughs. When viewing the **leaderboard**, the player should see their **best runs**, even if they did not successfully complete the game.
+
+## Bonus Task 6 — You Shall Not Pass!
+
+- Generate **doors** between rooms and corridors, as well as corresponding **keys**.
+- Implement a **colored key system**, inspired by the classic **DOOM** mechanics.
+- Use **modified depth-first or breadth-first search algorithms** to verify: k**ey accessibility**, v**alidity of generation** (ensure there are no softlocks — situations where progression becomes impossible)
+
+## Bonus Task 7 — The Art of Balance
+
+- Add a system of **dynamic difficulty adjustment** based on the player’s performance.
+- If the player **progresses too easily**, the game should **increase the difficulty**.
+- If the player **struggles**, the game may: s**pawn more helpful items** (e.g., additional healing if health is often low), r**educe the number and strength of enemies**
+
+## Bonus Task 8 — Imagine You’re a Table
+
+- Add a new enemy type: the **Mimic** (white m)
+- Mimics **disguise themselves as items**
+- Attributes: **high dexterity, low strength, high health, low hostility.**
+
+## Bonus Task 9 — Full 3D
+
+- Add a **3D rendering mode**, where:
+  - The **main view switches** to a **first-person 3D perspective**
+  - The **2D view remains** as a **mini-map** in the corner of the screen
+  - Controls are updated accordingly:  
+        W — move forward  
+        S — move backward  
+        A — turn left  
+        D — turn right
+- Use **Ray Casting** and the curses library for 3D rendering of rooms and corridors
+- **Room and tunnel walls should have textures** to make player movement visually clear
+- A sample implementation of 3D level rendering can be found in the code-samples folder
