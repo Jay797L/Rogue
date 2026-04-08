@@ -1,7 +1,6 @@
 # Core dependencies
 flask>=2.0.0
-curses
-pygame
+pygame-ce
 
 # Development tools
 pre-commit>=3.0.0  # Добавить сюда
