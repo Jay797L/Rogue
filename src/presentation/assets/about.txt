@@ -1,0 +1,75 @@
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                              ROGUES 21                                       ║
+║                          A Roguelike Adventure                               ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+CONTROLS
+────────
+  Movement (2D mode):
+    W/A/S/D or K/J/H/L  - Move in 4 directions
+
+  Movement (3D mode):
+    W/S - Move forward/backward
+    A/D - Rotate left/right
+    Q/E - Strafe left/right
+    V   - Switch between 2D/3D mode
+
+  General:
+    I       - Open inventory
+    S (Shift+S) - Save game
+    Q       - Quit to menu / Exit game
+    Enter   - Select / Use item
+
+INVENTORY
+──────────
+  Categories: A - Food, S - Potions, D - Scrolls, F - Weapons
+  Slots: 1-9 - Select item
+  Enter - Use selected item
+  Backspace - Drop item
+  0 - Unequip weapon
+
+GAMEPLAY
+────────
+  • Defeat enemies to gain treasure
+  • Collect food, potions, and scrolls to heal and buff
+  • Find keys to open locked doors
+  • Survive all 21 levels to win!
+  • Enemies become stronger on deeper levels
+  • Elite and Boss enemies drop more treasure
+
+ENEMIES
+────────
+  Zombie      - Basic undead enemy
+  Ghost       - Passes through walls, hard to hit
+  Ogr         - High damage, slow
+  Snake Mage  - Can stun you
+  Vampire     - Heals when attacking
+  Mimik       - Disguised as an item, attacks when hit
+
+ITEMS
+─────
+  Food (f)      - Restores HP
+  Potions (!)   - Temporary stat boosts or regeneration
+  Scrolls (?)   - Permanent stat increases
+  Weapons (/)   - Increase attack damage
+
+STATISTICS
+──────────
+  The game tracks your best runs:
+  • Treasure collected
+  • Highest level reached
+  • Enemies killed
+  • Items used
+  • Victory completions
+
+TIPS
+────
+  • Use potions before tough fights
+  • Keep distance from Ogrs
+  • Save keys for locked doors
+  • Explore the whole map for loot
+  • Switch to 3D mode for immersive view
+
+Good luck, adventurer!
+
+Press Q to return to menu

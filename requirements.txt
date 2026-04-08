@@ -1,0 +1,13 @@
+# Core dependencies
+flask>=2.0.0
+curses
+
+# Development tools
+pre-commit>=3.0.0  # Добавить сюда
+pytest
+pytest-cov
+
+# Optional but recommended
+black>=22.0.0
+pylint>=2.15.0
+ruff>=0.0.275

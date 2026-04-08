@@ -1,0 +1,105 @@
+{
+  "difficulty_curves": {
+    "enemy_hp": "logarithmic",
+    "enemy_damage": "linear",
+    "enemy_count": "square_root",
+    "item_quality": "logistic"
+  },
+  "base_values": {
+    "enemy_hp": 50,
+    "enemy_damage": 10,
+    "enemies_per_room_min": 1,
+    "enemies_per_room_max": 4,
+    "items_per_room_min": 1,
+    "items_per_room_max": 3
+  },
+  "growth_rates": {
+    "hp_growth": 0.15,
+    "damage_growth": 0.12,
+    "count_growth": 0.08,
+    "map_scale_growth": 0.03
+  },
+  "limits": {
+    "max_hp_multiplier": 5.0,
+    "max_damage_multiplier": 4.0,
+    "max_count_multiplier": 3.0,
+    "max_map_scale": 2.0,
+    "max_elite_chance": 0.3,
+    "max_boss_chance": 0.15
+  },
+  "enemy_spawn_thresholds": {
+    "zombie": 1,
+    "ghost": 1,
+    "ogr": 3,
+    "snake_mage": 5,
+    "vampire": 7,
+    "mimik": 10
+  },
+  "enemy_weights": {
+    "zombie": 40,
+    "ghost": 25,
+    "ogr": 20,
+    "snake_mage": 10,
+    "vampire": 5,
+    "mimik": 0
+  },
+  "weight_modifiers": {
+    "3": {
+      "ogr": 10,
+      "snake_mage": 5
+    },
+    "5": {
+      "vampire": 15,
+      "snake_mage": 10
+    },
+    "7": {
+      "mimik": 10
+    },
+    "10": {
+      "vampire": 20,
+      "mimik": 15
+    }
+  },
+  "elite_enemies": {
+    "enabled": true,
+    "start_level": 3,
+    "base_chance": 0.05,
+    "chance_growth": 0.01,
+    "hp_multiplier": 1.5,
+    "damage_multiplier": 1.3,
+    "dexterity_multiplier": 1.2
+  },
+  "mini_bosses": {
+    "enabled": true,
+    "start_level": 5,
+    "base_chance": 0.02,
+    "chance_growth": 0.005,
+    "hp_multiplier": 2.5,
+    "damage_multiplier": 2.0,
+    "dexterity_multiplier": 1.5
+  },
+  "player_power_weights": {
+    "hp": 0.2,
+    "strength": 0.35,
+    "dexterity": 0.25,
+    "scope": 0.1,
+    "treasure": 0.1
+  },
+  "max_stats": {
+    "hp": 500,
+    "strength": 500,
+    "dexterity": 100,
+    "scope": 30,
+    "treasure": 10000
+  },
+  "locked_doors": {
+    "min_pairs": 1,
+    "max_pairs": 3,
+    "pairs_per_5_levels": 1
+  },
+  "adaptive_difficulty": {
+    "enabled": true,
+    "player_power_influence": 0.5,
+    "death_penalty": 0.1
+  }
+}

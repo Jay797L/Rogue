@@ -1,6 +1,7 @@
 # Prerequisites
+**/*.code-workspace
+.venv/* 
 *.d
- 
 # Object files
 *.o
 *.ko
@@ -68,7 +69,7 @@
 *.deb
  
 # Audio formats
-*.mp3
+# *.mp3
 *.ogg
 *.wav
 *.aiff
@@ -129,3 +130,26 @@ Module.symvers
 Mkfile.old
 Makefile.old
 dkms.conf
+
+# Develop
+__pycache__/
+.pytest_cache/
+.gitignore
+backup.bundle
+.DS_Store
+
+
+
+*.code-workspace
+*venv*/
+lint*.txt
+snaps
+src/debug/lab_config.py
+*cache*
+logs/
+saves/
+stats/
+debug_snapshots/
+user_data/
+.obsidian/
+**/*.egg-info/
