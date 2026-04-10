@@ -45,6 +45,9 @@ class LevelStateData:
     level_num: int  # номер уровня
     player_state: PlayerStateData
     opened_doors: list[str] = field(default_factory=list)
+    dynamic_entities: list[dict] = field(
+        default_factory=list
+    )  # сериализованные сущности (враги, предметы)
 
 
 @dataclass
@@ -145,8 +148,160 @@ class SaveManager:
         player.scope = data.scope
         player.backpack = self.deserialize_backpack(data.backpack)
 
+    def serialize_dynamic_entities(self, level) -> list[dict]:
+        """Сериализует все динамические сущности (враги, предметы) на уровне."""
+        from domain.base.core.base_item import Item
+        from domain.base.data.item_presets import KeyItem
+
+        entities = []
+        # Проходим по всем клеткам карты
+        for point, cell in level.map_manager._content.items():
+            owner = getattr(cell, "owner", None)
+            if owner is None:
+                continue
+            # Пропускаем игрока
+            if hasattr(owner, "name") and owner.name == "player":
+                continue
+            # Пропускаем выход (детерминирован)
+            if hasattr(cell, "content") and cell.content == "E":
+                continue
+
+            entity_data = {
+                "type": owner.__class__.__name__,
+                "point_y": point.y,
+                "point_x": point.x,
+            }
+
+            # Общие атрибуты
+            if hasattr(owner, "hp"):
+                entity_data["hp"] = owner.hp
+                entity_data["max_hp"] = owner.max_hp
+            if hasattr(owner, "strength"):
+                entity_data["strength"] = owner.strength
+            if hasattr(owner, "dexterity"):
+                entity_data["dexterity"] = owner.dexterity
+            if hasattr(owner, "scope"):
+                entity_data["scope"] = owner.scope
+            if hasattr(owner, "name"):
+                entity_data["name"] = owner.name
+
+            # Для предметов
+            if isinstance(owner, Item):
+                entity_data["category"] = owner.category.value
+                entity_data["specification"] = owner.specification
+                entity_data["attribute"] = owner.attribute
+                if isinstance(owner, KeyItem) and hasattr(owner, "opens_door_id"):
+                    entity_data["opens_door_id"] = owner.opens_door_id
+                # Арт сохранять не нужно, он восстанавливается из класса
+
+            # Для врагов — информация элитности/босса из enemy_manager
+            if (
+                hasattr(level, "enemy_manager")
+                and owner.uid in level.enemy_manager.enemies_info
+            ):
+                info = level.enemy_manager.enemies_info[owner.uid]
+                entity_data["is_elite"] = info.get("is_elite", False)
+                entity_data["is_boss"] = info.get("is_boss", False)
+
+            entities.append(entity_data)
+
+        logger.info(f"Serialized {len(entities)} dynamic entities")
+        return entities
+
+    def restore_dynamic_entities(self, level, entities_data: list[dict]) -> None:
+        """Восстанавливает динамические сущности на уровне."""
+        from domain.base.core.base_item import Item
+        from domain.base.core.character import Character
+        from domain.base.data.entities import get_preset
+        from domain.base.data.register_item import get_item_by_name
+        from domain.base.utils.point import Point
+
+        # Очищаем все динамические сущности (кроме игрока и выхода)
+        points_to_remove = []
+        for point, cell in level.map_manager._content.items():
+            owner = getattr(cell, "owner", None)
+            if owner is not None:
+                if hasattr(owner, "name") and owner.name == "player":
+                    continue
+                if hasattr(cell, "content") and cell.content == "E":
+                    continue
+                points_to_remove.append(point)
+        for point in points_to_remove:
+            del level.map_manager[point]
+
+        # Очищаем enemy_manager
+        level.enemy_manager.enemies.clear()
+        level.enemy_manager.enemies_info.clear()
+        level.enemy_manager.active_effects.clear()
+
+        # Восстанавливаем сущности
+        for data in entities_data:
+            entity_class_name = data["type"]
+            point = Point(data["point_y"], data["point_x"])
+
+            # Пытаемся получить класс сущности
+            entity_class = None
+            # Сначала проверяем предметы
+            try:
+                entity_class = get_item_by_name(entity_class_name)
+            except:
+                pass
+            if entity_class is None:
+                # Потом враги
+                entity_class = get_preset(entity_class_name)
+
+            if entity_class is None:
+                logger.warning(f"Unknown entity type: {entity_class_name}, skipping")
+                continue
+
+            # Создаём экземпляр
+            entity = entity_class()
+            # Восстанавливаем атрибуты
+            if "hp" in data:
+                entity.hp = data["hp"]
+                entity.max_hp = data["max_hp"]
+            if "strength" in data:
+                entity.strength = data["strength"]
+            if "dexterity" in data:
+                entity.dexterity = data["dexterity"]
+            if "scope" in data:
+                entity.scope = data["scope"]
+            if "name" in data:
+                entity.name = data["name"]
+
+            # Для предметов
+            if isinstance(entity, Item):
+                if "category" in data:
+                    from domain.base.core.item_category import ItemCategory
+
+                    entity.category = ItemCategory(data["category"])
+                if "specification" in data:
+                    entity.specification = data["specification"]
+                if "attribute" in data:
+                    entity.attribute = data["attribute"]
+                if "opens_door_id" in data:
+                    entity.opens_door_id = data["opens_door_id"]
+
+            # Размещаем на карте
+            entity.point = point
+            level.map_manager[point] = entity.cell
+
+            # Добавляем в enemy_manager, если это враг
+            if isinstance(entity, Character) and entity.name != "player":
+                is_elite = data.get("is_elite", False)
+                is_boss = data.get("is_boss", False)
+                level.enemy_manager.add(entity, is_elite=is_elite, is_boss=is_boss)
+
+        logger.info(f"Restored {len(entities_data)} dynamic entities")
+
     def save(
-        self, seed: int, level_num: int, player: Player, is_auto: bool = False
+        self,
+        seed: int,
+        level_num: int,
+        player: Player,
+        is_auto: bool = False,
+        level=None,
+        game=None,
     ) -> Path:
         """Сохраняет текущее состояние игры.
 
@@ -155,15 +310,29 @@ class SaveManager:
             level_num: Номер текущего уровня
             player: Игрок
             is_auto: Является ли сохранение автоматическим
+            level: Текущий уровень (для сохранения динамических сущностей)
+            game: Ссылка на игру (для получения opened_doors)
 
         Returns:
             Path: Путь к файлу сохранения
         """
         player_state = self.serialize_player_state(player)
+        dynamic_entities = []
+        if level is not None:
+            dynamic_entities = self.serialize_dynamic_entities(level)
+
+        opened_doors = []
+        if game is not None:
+            opened_doors = game.opened_doors
+        elif hasattr(self, "game") and self.game:
+            opened_doors = self.game.opened_doors
+
         level_state = LevelStateData(
             seed=seed,
             level_num=level_num,
             player_state=player_state,
+            opened_doors=opened_doors,
+            dynamic_entities=dynamic_entities,
         )
         save_data = SaveData(game_data=level_state)
 
@@ -184,17 +353,20 @@ class SaveManager:
         return filepath
 
     def get_latest_save(self) -> Path | None:
-        """Возвращает путь к последнему сохранению (приоритет у автосохранения)."""
-        saves = self.list_saves()
-        if not saves:
-            return None
+        """Возвращает путь к последнему сохранению.
 
-        # Проверяем наличие автосохранения
+        Приоритет:
+        1. Автосохранение (всегда одно, всегда самое свежее)
+        2. Последнее ручное сохранение по времени
+        """
         auto_save_path = self.SAVE_DIR / STRINGS.AUTO_SAVE_FILENAME
         if auto_save_path.exists():
             return auto_save_path
 
-        # Иначе возвращаем последнее ручное сохранение
+        saves = self.list_saves()
+        if not saves:
+            return None
+
         return saves[0][0]
 
     def load(self, filepath: Path | str) -> SaveData | None:
@@ -211,10 +383,13 @@ class SaveManager:
             # Восстанавливаем структуру
             game_data = data.get("game_data")
             if game_data:
+                dynamic_entities = game_data.get("dynamic_entities", [])
                 game_data = LevelStateData(
                     seed=game_data["seed"],
                     level_num=game_data["level_num"],
                     player_state=PlayerStateData(**game_data["player_state"]),
+                    opened_doors=game_data.get("opened_doors", []),
+                    dynamic_entities=dynamic_entities,
                 )
 
             return SaveData(

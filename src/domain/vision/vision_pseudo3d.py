@@ -4,7 +4,6 @@ import math
 from domain.base.core.base_vision import BaseVision
 from domain.base.core.character import Character
 from domain.base.core.pixel import Pixel
-from domain.base.data.colors import COLORS
 from domain.map.map_assembly.map_manager import MapManager
 from domain.vision.stuff_for_3d.entity_renderer import EntityRenderer
 from domain.vision.stuff_for_3d.minimap_renderer import MinimapRenderer

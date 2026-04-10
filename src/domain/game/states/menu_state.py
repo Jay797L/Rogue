@@ -83,6 +83,7 @@ class MenuState(GameStateBase):
             self.game.fsm.transition_to(GameState.EXPLORING)
 
         elif selected == STRINGS.CONTINUE:
+            # Load latest save (autosave has priority)
             if self.game.load_last_save():
                 self.game.fsm.transition_to(GameState.EXPLORING)
             else:

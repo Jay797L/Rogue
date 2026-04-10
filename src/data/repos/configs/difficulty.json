@@ -1,4 +1,10 @@
 {
+  "treasure_rewards": {
+    "base_treasure": 10,
+    "elite_multiplier": 3,
+    "boss_multiplier": 5,
+    "level_scaling": 0.2
+  },
   "difficulty_curves": {
     "enemy_hp": "logarithmic",
     "enemy_damage": "linear",
@@ -33,15 +39,15 @@
     "ogr": 3,
     "snake_mage": 5,
     "vampire": 7,
-    "mimik": 10
+    "mimik": 1
   },
   "enemy_weights": {
-    "zombie": 40,
-    "ghost": 25,
-    "ogr": 20,
+    "zombie": 35,
+    "ghost": 20,
+    "ogr": 15,
     "snake_mage": 10,
     "vampire": 5,
-    "mimik": 0
+    "mimik": 15
   },
   "weight_modifiers": {
     "3": {
@@ -53,11 +59,12 @@
       "snake_mage": 10
     },
     "7": {
+      "vampire": 20,
       "mimik": 10
     },
     "10": {
-      "vampire": 20,
-      "mimik": 15
+      "vampire": 25,
+      "mimik": 20
     }
   },
   "elite_enemies": {

@@ -30,7 +30,11 @@ def setup_logging(
     """
 
     if log_dir is None:
-        log_dir = project_root / "src"/ "data" / "repos" /"logs" if project_root is not None else Path("logs")
+        log_dir = (
+            project_root / "src" / "data" / "repos" / "logs"
+            if project_root is not None
+            else Path("logs")
+        )
 
     log_dir.mkdir(parents=True, exist_ok=True)
 

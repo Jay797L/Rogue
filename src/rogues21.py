@@ -16,6 +16,22 @@ from presentation.game_view import CursesGameView
 
 
 def main():
+    # Capture stderr and stdout to suppress pygame and other library output
+    import os
+
+    # Save original stdout/stderr for later
+    original_stdout = sys.stdout
+    original_stderr = sys.stderr
+
+    # Create null device for suppressing output
+    devnull = open(os.devnull, "w", encoding="utf-8")
+
+    # Suppress stdout and stderr during gameplay
+    sys.stdout = devnull
+    sys.stderr = devnull
+
+    # Store errors in memory
+
     try:
         project_root = Path(__file__).resolve().parent
 
@@ -33,14 +49,22 @@ def main():
         elif "--quiet" in sys.argv:
             log_level = logging.ERROR
 
+        # Delete old log files on startup
+        logs_dir = repos / "logs"
+        if logs_dir.exists():
+            import shutil
+
+            shutil.rmtree(logs_dir)
+        logs_dir.mkdir(parents=True, exist_ok=True)
+
         enable_file_logging = "--log" in sys.argv or log_level != logging.INFO
         if enable_file_logging:
-            log_file = repos / "logs" / "game.log"
+            log_file = logs_dir / "game.log"
             setup_logging(
                 level=log_level,
                 log_file=log_file,
                 enable_console=False,
-                log_dir=repos / "logs",
+                log_dir=logs_dir,
                 project_root=project_root,
                 disabled_loggers=DISABLE_LOGERS,
                 enable_error_log=True,
@@ -96,19 +120,67 @@ def main():
                 music_player.unpause()
             else:
                 music_player.pause()
+        # Capture error logs to display after exit
+        error_logs = []
+        original_error_handler = (
+            logging.getLogger().handlers[0] if logging.getLogger().handlers else None
+        )
+
+        class ErrorCaptureHandler(logging.Handler):
+            def emit(self, record):
+                if record.levelno >= logging.ERROR:
+                    error_logs.append(self.format(record))
+
+        if enable_file_logging:
+            error_capture = ErrorCaptureHandler()
+            error_capture.setFormatter(
+                logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
+            )
+            logging.getLogger().addHandler(error_capture)
+
+        # Restore stdout/stderr before curses
+        sys.stdout = original_stdout
+        sys.stderr = original_stderr
+
         view = CursesGameView(game)
         view.run()
 
         logger.info("Game finished normally")
 
+        # Restore stdout/stderr to show errors
+        sys.stdout = original_stdout
+        sys.stderr = original_stderr
+
+        # Display error logs after exit
+        if error_logs:
+            print("\n" + "=" * 60)
+            print("ERROR LOGS FROM THIS SESSION:")
+            print("=" * 60)
+            for log in error_logs:
+                print(log)
+            print("=" * 60)
+
     except Exception as e:
+        # Restore stdout/stderr to show error
+        sys.stdout = original_stdout
+        sys.stderr = original_stderr
         try:
             logger = get_logger(__name__)
             logger.exception("Fatal error occurred")
+            # Show the error immediately on crash
+            print(f"\n{'=' * 60}")
+            print(f"FATAL ERROR: {e}")
+            print(f"{'=' * 60}")
+            traceback.print_exc()
+            print(f"{'=' * 60}")
         except:
             print(f"FATAL ERROR: {e}")
-
             traceback.print_exc()
+    finally:
+        # Close devnull and ensure stdout/stderr are restored
+        devnull.close()
+        sys.stdout = original_stdout
+        sys.stderr = original_stderr
 
 
 if __name__ == "__main__":

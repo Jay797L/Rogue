@@ -14,19 +14,20 @@ class GameOverState(GameStateBase):
         super().__init__(game)
         self.waiting_for_input = True
         self.is_victory = False
+        self.completed_run = None
 
-    def on_enter(self, is_victory: bool = False):
+    def on_enter(self, is_victory: bool = False, completed_run=None):
         """При входе в состояние конца игры."""
         self.waiting_for_input = True
         self.is_victory = is_victory
+        self.completed_run = completed_run
 
         if self.is_victory:
             self.game.message = STRINGS.VICTORY
         else:
             self.game.message = STRINGS.GAME_OVER_TITLE
 
-        self.game.statistics.finish_run()
-
+        # finish_run is already called in BaseGame.game_over, do not call again
         self._delete_auto_save()
 
         if hasattr(self.game, "_game_view") and self.game._game_view:

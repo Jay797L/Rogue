@@ -26,13 +26,30 @@ class MapGenerator:
         map_property: MapGenProp,
     ) -> tuple[MapLayout, MapManager]:
         """Генерирует полную карту с клетками."""
+        import logging
+
+        logger = logging.getLogger(__name__)
 
         map_layout = MapGenerator._generate_map_layout(map_property)
+
+        if map_layout is None:
+            logger.error("_generate_map_layout returned None")
+            return None, None
+
+        if not map_layout.rooms:
+            logger.error("Map layout has no rooms")
+            return map_layout, None
+
         map_manager = MapManager()
         MapGenerator._add_rooms(map_manager, map_layout)
         MapGenerator._add_hallways(map_manager, map_layout)
         MapGenerator._add_doors(map_manager, map_layout)
         MapGenerator._open_doors(map_manager, map_layout)
+
+        if not map_manager._content:
+            logger.error("Map has no content after adding elements")
+            return map_layout, None
+
         map_manager = MapCleaner.clean_map(map_layout, map_manager)
 
         return map_layout, map_manager
@@ -40,10 +57,19 @@ class MapGenerator:
     @staticmethod
     def _generate_map_layout(map_property: MapGenProp) -> MapLayout:
         """Генерирует макет карты (только структура, без клеток)."""
+        import logging
+
+        logger = logging.getLogger(__name__)
+
         map_data = MapLayout(map_property)
         random.seed(map_data.map_property.seed)
         map_data.graph = GraphGenerator.gen_random_graph()
         map_data.rooms = RoomGenerator.gen_all_rooms(map_data.map_property)
+
+        if not map_data.rooms:
+            logger.error("RoomGenerator.gen_all_rooms returned empty list")
+            return map_data
+
         map_data.doors, map_data.hallways = (
             HallwaysGenerator.gen_all_hallways_and_doors(map_data, map_data.graph)
         )

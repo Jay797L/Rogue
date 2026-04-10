@@ -80,18 +80,24 @@ class GameOverRenderer:
         if self.widget:
             self.widget.draw(self.stdscr, self.frame / 10.0)
 
+        # Use completed_run from state if available (finished run), otherwise current_run
+        completed_run = getattr(state, "completed_run", None)
+        if completed_run is not None:
+            run_for_stats = completed_run
+        else:
+            run_for_stats = game.statistics.current_run
+
         if height >= 15 and width >= 40:
-            self._render_statistics(game, height, width)
+            self._render_statistics_with_run(run_for_stats, height, width)
             self._render_prompt(height, width)
         else:
-            self._render_minimal(game, height, width)
+            self._render_minimal_with_run(run_for_stats, height, width)
 
         self.stdscr.refresh()
         self.frame = (self.frame + 1) % self.max_frames
 
-    def _render_statistics(self, game: BaseGame, height: int, width: int) -> None:
-        """Отображает статистику (как было)."""
-        stats = game.statistics.current_run
+    def _render_statistics_with_run(self, stats, height: int, width: int) -> None:
+        """Отображает статистику из переданного run."""
 
         title = "YOUR STATS"
         title_x = (width - len(title)) // 2
@@ -164,8 +170,8 @@ class GameOverRenderer:
                 curses.color_pair(prompt_color),
             )
 
-    def _render_minimal(self, game: BaseGame, height: int, width: int) -> None:
-        """Упрощённая версия для маленьких экранов (как было)."""
+    def _render_minimal_with_run(self, stats, height: int, width: int) -> None:
+        """Упрощённая версия для маленьких экранов."""
         title = "GAME OVER"
         title_x = (width - len(title)) // 2
         title_y = max(0, height // 3)
@@ -174,7 +180,6 @@ class GameOverRenderer:
             death_color = color_manager.get_color_pair_from_preset(ColorPreset.RED)
             self.stdscr.addstr(title_y, title_x, title, curses.color_pair(death_color))
 
-        stats = game.statistics.current_run
         stats_y = title_y + 2
 
         simple_stats = [

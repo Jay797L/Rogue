@@ -73,20 +73,23 @@ class BaseGameView(ABC):
         """Получение пользовательского ввода и преобразование в GameKey."""
         logger.debug("Вызов _get_input (абстрактный метод)")
 
+    @staticmethod
+    def get_action_from_char(key_char: str) -> GameKey:
+        """Преобразует символ (строку) в GameKey с поддержкой русской раскладки."""
+        for action in GameKey:
+            if action.matches(key_char):
+                logger.debug(f"Символ '{key_char}' распознан как {action}")
+                return action
+
+        logger.debug(f"Символ '{key_char}' не распознан")
+        return GameKey.NOPE
+
+    @staticmethod
     def get_action(key_code: int) -> GameKey:
-        """Преобразует код клавиши в GameKey (общая логика)."""
+        """Преобразует код клавиши в GameKey (общая логика, устаревший метод)."""
         try:
             key_char = chr(key_code)
         except (ValueError, TypeError):
             logger.debug(f"Не удалось преобразовать код {key_code} в символ")
             return GameKey.NOPE
-
-        for action in GameKey:
-            if action.matches(key_char):
-                logger.debug(
-                    f"Клавиша '{key_char}' (код {key_code}) распознана как {action}"
-                )
-                return action
-
-        logger.debug(f"Клавиша '{key_char}' (код {key_code}) не распознана")
-        return GameKey.NOPE
+        return BaseGameView.get_action_from_char(key_char)

@@ -71,7 +71,7 @@ class EntityRenderer:
             if entity_art:
                 # Обрезаем крайние пробелы и получаем информацию о смещении
                 trimmed_art, left_trims = self._trim_art_spaces(entity_art)
-                
+
                 actual_height = len(trimmed_art)
                 actual_width = (
                     max(len(line) for line in trimmed_art) if trimmed_art else 1
@@ -96,11 +96,11 @@ class EntityRenderer:
                 )
 
                 continue
-            
+
             # Для fallback-символов
             entity_height = max(1, int(3 * scale))
             y_offset = self._calculate_floor_y_offset(distance, entity_height)
-            
+
             entities_to_render.append(
                 {
                     "distance": distance,
@@ -121,10 +121,10 @@ class EntityRenderer:
     def _calculate_scale_by_distance(self, distance: float) -> float:
         """
         Вычисляет коэффициент масштабирования в зависимости от расстояния.
-        
+
         Args:
             distance: Расстояние до объекта
-            
+
         Returns:
             float: Коэффициент масштабирования (MIN_SCALE - MAX_SCALE)
         """
@@ -132,79 +132,83 @@ class EntityRenderer:
         MAX_SCALE = 3.0  # Максимальный масштаб для объектов вплотную
         MIN_SCALE = 1.0  # Минимальный масштаб (100%)
         SCALE_DISTANCE = 4.0  # Расстояние, на котором масштаб становится минимальным
-        
+
         if distance <= 0:
             return MAX_SCALE
-        
+
         # Линейная интерполяция между MAX_SCALE и MIN_SCALE
-        scale = MAX_SCALE - (min(distance, SCALE_DISTANCE) / SCALE_DISTANCE) * (MAX_SCALE - MIN_SCALE)
-        
+        scale = MAX_SCALE - (min(distance, SCALE_DISTANCE) / SCALE_DISTANCE) * (
+            MAX_SCALE - MIN_SCALE
+        )
+
         return max(MIN_SCALE, scale)
 
     def _calculate_floor_y_offset(self, distance: float, object_height: int) -> int:
         """
         Вычисляет вертикальную позицию объекта так, чтобы он стоял на полу.
-        
+
         Близкие объекты (distance ~ 0) находятся внизу экрана.
         Далекие объекты (distance ~ MAX_RENDER_DIST) находятся около горизонта.
         Горизонт находится примерно на 60% высоты экрана (уровень глаз).
-        
+
         Args:
             distance: Расстояние до объекта
             object_height: Высота объекта в символах
-            
+
         Returns:
             int: Y-координата верхнего левого угла объекта
         """
         # Константы для настройки перспективы
         HORIZON_RATIO = 0.6  # Горизонт на 60% высоты экрана
         MAX_VISIBLE_DISTANCE = 5.0  # Максимальная дистанция отрисовки сущностей
-        
+
         # Нормализуем дистанцию (0 = близко, 1 = далеко)
         normalized_dist = min(distance, MAX_VISIBLE_DISTANCE) / MAX_VISIBLE_DISTANCE
-        
+
         # Вычисляем позицию пола для данной дистанции
         horizon_y = int(self.screen_height * HORIZON_RATIO)
-        
+
         # Для distance=0 объект в самом низу, для distance=max - на горизонте
-        floor_y = int(horizon_y + (self.screen_height - horizon_y) * (1 - normalized_dist))
-        
+        floor_y = int(
+            horizon_y + (self.screen_height - horizon_y) * (1 - normalized_dist)
+        )
+
         # Корректируем с учетом высоты объекта
         y_offset = floor_y - object_height
-        
+
         # Убеждаемся, что объект не выходит за пределы экрана
         return max(0, min(y_offset, self.screen_height - object_height))
 
     def _trim_art_spaces(self, art: list[str]) -> tuple[list[str], list[int]]:
         """
         Обрезает крайние пробелы и возвращает информацию о смещении.
-        
+
         "  # #  " -> (["# #"], left_trim=2)
         "   W   " -> (["W"], left_trim=3)
         "  @ @  " -> (["@ @"], left_trim=2)
-        
+
         Args:
             art: Список строк арта
-            
+
         Returns:
             tuple: (обрезанные строки, список смещений для каждой строки)
         """
         trimmed_lines = []
         left_trims = []
-        
+
         for line in art:
             # Находим количество пробелов слева
             left_trim = len(line) - len(line.lstrip())
             # Обрезаем пробелы справа
             stripped = line.rstrip()
-            
+
             if stripped:
                 trimmed_lines.append(stripped)
                 left_trims.append(left_trim)
             else:
                 # Пустые строки пропускаем
                 continue
-                
+
         return trimmed_lines, left_trims
 
     def _render_single_entity(self, pixels: list[Pixel], entity_data: dict) -> None:
@@ -230,18 +234,18 @@ class EntityRenderer:
             y = y_offset + row_idx
             if not 0 <= y < self.screen_height:
                 continue
-                
+
             # Получаем оригинальное смещение слева для этой строки
             original_left_trim = left_trims[row_idx] if row_idx < len(left_trims) else 0
-            
+
             for col_idx, char in enumerate(line):
                 # Вычисляем реальную X координату с учетом оригинальных левых пробелов
                 # Пробелы влияют на позицию, но не рисуются и не затирают
                 x = x_offset + col_idx + original_left_trim
-                
+
                 if not 0 <= x < self.screen_width:
                     continue
-                    
+
                 if char == " ":
                     # Внутренние пробелы (не крайние) - затирают пол
                     # Крайние пробелы уже удалены, так что это именно внутренние пробелы
@@ -250,7 +254,7 @@ class EntityRenderer:
                             pixels.pop(i)
                             break
                     continue
-                    
+
                 # Не пробел - рисуем символ сущности
                 replaced = False
                 for i, pixel in enumerate(pixels):

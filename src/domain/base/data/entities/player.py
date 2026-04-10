@@ -60,7 +60,21 @@ def player_ai(
     if target_cell.owner:
         if isinstance(target_cell.owner, KeyItem):
             key = target_cell.owner
-            if map_manager._game.open_door(key.opens_door_id):
+            # Открываем дверь с соответствующим ID
+            if map_manager._game and map_manager._game.open_door(key.opens_door_id):
+                del map_manager[target_point]
+                # Ключ использован, удаляем его с карты
+                return ci.MoveOrder(player, target_point), []
+            else:
+                # Если дверь не открылась (уже открыта или нет такой двери)
+                # Просто подбираем ключ как обычный предмет
+                discarded_item = player.backpack.add_equipment(key)
+                if discarded_item:
+                    map_manager[player.point] = discarded_item.cell
+                    discarded_item.point = player.point
+                    map_manager[target_point] = player.cell
+                    player.point = target_point
+                    return None, []
                 del map_manager[target_point]
                 return ci.MoveOrder(player, target_point), []
         elif isinstance(target_cell.owner, ci.Character):

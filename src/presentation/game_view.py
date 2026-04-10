@@ -66,17 +66,17 @@ class CursesGameView(BaseGameView):
             curses.doupdate()
 
         try:
-            self.original_winch = signal.signal(signal.SIGWINCH, self._handle_window_resize)
+            self.original_winch = signal.signal(
+                signal.SIGWINCH, self._handle_window_resize
+            )
         except (AttributeError, OSError):
             # SIGWINCH not available - we'll poll on each frame
             self.original_winch = None
             logger.info("Window resize signal not available - using polling method")
 
-
     def _handle_window_resize(self, signum, frame):
         """Handle window resize signal (Unix only)."""
         self._check_window_resize()
-
 
     def _check_window_resize(self):
         """Check if window size changed and handle it."""
@@ -87,7 +87,6 @@ class CursesGameView(BaseGameView):
                 self._on_window_resize()
         except curses.error:
             pass  # Curses not fully initialized yet
-
 
     def _on_window_resize(self):
         """Handle window resize event."""
@@ -247,40 +246,63 @@ class CursesGameView(BaseGameView):
         if current_state in (GameState.MENU, GameState.LOAD_GAME):
             self.stdscr.nodelay(1)
             try:
-                key_code = self.stdscr.getch()
+                key = self.stdscr.get_wch()
             except KeyboardInterrupt:
                 self._cleanup_and_exit()
                 return GameKey.KEY_Q
+            except curses.error:
+                # Fallback to getch if get_wch fails
+                try:
+                    key_code = self.stdscr.getch()
+                    if key_code == -1:
+                        return GameKey.NOPE
+                    key = key_code
+                except:
+                    return GameKey.NOPE
 
             curses.napms(30)
-            if key_code == -1:
+            if key == -1:
                 curses.napms(30)
                 return GameKey.NOPE
         else:
             self.stdscr.nodelay(False)
             try:
-                key_code = self.stdscr.getch()
+                key = self.stdscr.get_wch()
             except KeyboardInterrupt:
                 self._cleanup_and_exit()
                 return GameKey.KEY_Q
+            except curses.error:
+                try:
+                    key_code = self.stdscr.getch()
+                    key = key_code
+                except:
+                    return GameKey.NOPE
 
-        if key_code == 3:
-            self._cleanup_and_exit()
-            return GameKey.KEY_Q
-        if key_code in (curses.KEY_ENTER, 10, 13):
-            return GameKey.SELECT
-        if key_code in (curses.KEY_BACKSPACE, 127):
-            return GameKey.BACKSPACE
-        if key_code == curses.KEY_UP:
-            return GameKey.KEY_W
-        if key_code == curses.KEY_DOWN:
-            return GameKey.KEY_S
-        if key_code == curses.KEY_LEFT:
-            return GameKey.KEY_A
-        if key_code == curses.KEY_RIGHT:
-            return GameKey.KEY_D
+        # Обработка специальных клавиш
+        if isinstance(key, int):
+            if key == 3:  # Ctrl+C
+                self._cleanup_and_exit()
+                return GameKey.KEY_Q
+            if key in (curses.KEY_ENTER, 10, 13):
+                return GameKey.SELECT
+            if key in (curses.KEY_BACKSPACE, 127):
+                return GameKey.BACKSPACE
+            if key == curses.KEY_UP:
+                return GameKey.KEY_W
+            if key == curses.KEY_DOWN:
+                return GameKey.KEY_S
+            if key == curses.KEY_LEFT:
+                return GameKey.KEY_A
+            if key == curses.KEY_RIGHT:
+                return GameKey.KEY_D
+            # Если это обычный код символа, преобразуем в символ
+            try:
+                key = chr(key)
+            except:
+                return GameKey.NOPE
 
-        return BaseGameView.get_action(key_code)
+        # key теперь строка (символ)
+        return BaseGameView.get_action_from_char(key)
 
     def _render_statistics(self):
         """Отображает таблицу статистики."""

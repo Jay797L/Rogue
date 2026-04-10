@@ -15,6 +15,7 @@ from domain.base.data.consts import CONST
 from domain.base.data.entities.player import Player
 from domain.base.data.strings import STRINGS
 from domain.base.difficulty import difficulty_calculator
+from domain.base.utils.point import Point
 from domain.game.core.direction_mapping import get_direction_from_key
 from domain.game.state_machine.fsm import FiniteStateMachine
 from domain.game.state_machine.game_key import GameKey
@@ -99,18 +100,76 @@ class BaseGame:
         self.current_seed = save_data.game_data.seed
         self.current_level_num = save_data.game_data.level_num
         self.opened_doors = save_data.game_data.opened_doors
+
+        # Сохраняем позицию игрока до десериализации
+        saved_player_point = Point(
+            save_data.game_data.player_state.point["y"],
+            save_data.game_data.player_state.point["x"],
+        )
+
         save_manager.deserialize_player_state(
             save_data.game_data.player_state, self.player
         )
 
         self.reset_vision()
 
-        self._initialize_level(
+        # Генерируем уровень с переданной позицией игрока
+        from domain.map.level_generation.level_generator import LevelGenerator
+
+        self.level = LevelGenerator.level_gen(
+            player=self.player,
             difficulty=self.current_level_num,
             seed=self.current_seed,
             opened_doors=self.opened_doors,
+            player_start_point=saved_player_point,
         )
+
+        if self.level is None:
+            self.message = STRINGS.LOAD_ERROR
+            return False
+
         self.level.map_manager._game = self
+
+        # Set game reference for all entities' actions to record hit statistics
+        for point, cell in self.level.map_manager._content.items():
+            if (
+                cell.owner is not None
+                and hasattr(cell.owner, "action")
+                and cell.owner.action is not None
+            ):
+                if hasattr(cell.owner.action, "game"):
+                    cell.owner.action.game = self
+        if (
+            hasattr(self.player, "action")
+            and self.player.action is not None
+            and hasattr(self.player.action, "game")
+        ):
+            self.player.action.game = self
+
+        # Propagate game reference to all entities' actions for hit statistics
+        for point, cell in self.level.map_manager._content.items():
+            owner = getattr(cell, "owner", None)
+            if (
+                owner is not None
+                and hasattr(owner, "action")
+                and owner.action is not None
+            ):
+                if hasattr(owner.action, "game"):
+                    owner.action.game = self
+        if (
+            hasattr(self.player, "action")
+            and self.player.action is not None
+            and hasattr(self.player.action, "game")
+        ):
+            self.player.action.game = self
+
+        # Восстанавливаем динамические сущности (враги, предметы)
+        # При этом игрок уже на правильной позиции, и мы не перезаписываем его
+        if save_data.game_data.dynamic_entities:
+            save_manager.restore_dynamic_entities(
+                self.level, save_data.game_data.dynamic_entities
+            )
+
         self.game_started = True
         self.message = STRINGS.GAME_LOADED.format(self.current_level_num)
         self._setup_vision()
@@ -148,6 +207,8 @@ class BaseGame:
                 level_num=self.current_level_num,
                 player=self.player,
                 is_auto=True,
+                level=self.level,
+                game=self,
             )
 
     def save_game(self, is_auto: bool = False) -> bool:
@@ -163,6 +224,8 @@ class BaseGame:
             level_num=self.current_level_num,
             player=self.player,
             is_auto=is_auto,
+            level=self.level,
+            game=self,
         )
         if not is_auto:
             self.message = STRINGS.GAME_SAVED.format(filepath.name)
@@ -175,14 +238,14 @@ class BaseGame:
         return len(saves) > 0
 
     def load_last_save(self) -> bool:
-        """Загружает последнее сохранение."""
+        """Загружает последнее сохранение (приоритет у автосохранения)."""
         save_manager = SaveManager(project_root=self.project_root)
-        saves = save_manager.list_saves()
-        if not saves:
+        save_path = save_manager.get_latest_save()
+        if save_path is None:
             self.message = STRINGS.NO_SAVED_GAMES
             return False
 
-        return self.load_game(saves[0][0])
+        return self.load_game(save_path)
 
     def handle_move(self, action: GameKey) -> bool:
         """Общая логика движения."""
@@ -313,9 +376,32 @@ class BaseGame:
             self.message = STRINGS.VICTORY
         else:
             self.message = STRINGS.GAME_OVER
-        self.finish_run()
 
-        self.fsm.transition_to(GameState.GAME_OVER, is_victory=is_victory)
+        # Copy current run statistics before finish_run resets it
+        from data.managers.statistics import RunStatistics
+
+        current = self.statistics.current_run
+        completed_run = RunStatistics(
+            total_treasure=current.total_treasure,
+            max_level_reached=current.max_level_reached,
+            enemies_killed=current.enemies_killed,
+            food_eaten=current.food_eaten,
+            elixirs_drank=current.elixirs_drank,
+            scrolls_read=current.scrolls_read,
+            weapons_used=current.weapons_used,
+            hits_dealt=current.hits_dealt,
+            hits_taken=current.hits_taken,
+            damage_dealt=current.damage_dealt,
+            damage_taken=current.damage_taken,
+            cells_moved=current.cells_moved,
+            levels_completed=current.levels_completed,
+            timestamp=current.timestamp,
+            is_victory=is_victory,
+        )
+        self.finish_run()
+        self.fsm.transition_to(
+            GameState.GAME_OVER, is_victory=is_victory, completed_run=completed_run
+        )
 
     def next_level(self):
         """Переход на следующий уровень с сохранением прогресса."""

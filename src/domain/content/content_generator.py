@@ -97,6 +97,21 @@ class ContentGenerator:
                 continue
             entity = entity_class()
 
+            # Set game reference for action to record hit statistics - use safe access
+            game_ref = None
+            if (
+                hasattr(self.level.map_manager, "_game")
+                and self.level.map_manager._game is not None
+            ):
+                game_ref = self.level.map_manager._game
+
+            if (
+                hasattr(entity, "action")
+                and entity.action is not None
+                and hasattr(entity.action, "game")
+            ):
+                entity.action.game = game_ref
+
             is_elite = False
             is_boss = False
             if add_to_enemy_manager and self.difficulty_profile:

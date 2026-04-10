@@ -4,26 +4,26 @@ from enum import Enum
 class GameKey(Enum):
     """Enum representing keyboard controls for the game."""
 
-    KEY_F = "f"
+    KEY_F = ("f", "а")
 
-    KEY_W = "w"
-    KEY_S = "s"
-    KEY_A = "a"
-    KEY_D = "d"
-    KEY_V = "v"
+    KEY_W = ("w", "ц")
+    KEY_S = ("s", "ы")
+    KEY_A = ("a", "ф")
+    KEY_D = ("d", "в")
+    KEY_V = ("v", "м")
 
-    KEY_H = "h"
-    KEY_J = "j"
-    KEY_K = "k"
-    KEY_L = "l"
-    KEY_E = "e"
-    KEY_M = "m"
+    KEY_H = ("h", "р")
+    KEY_J = ("j", "о")
+    KEY_K = ("k", "л")
+    KEY_L = ("l", "д")
+    KEY_E = ("e", "у")
+    KEY_M = ("m", "ь")
 
-    KEY_Q = ("q", ":")
-    SAVE_GAME = ("S",)
-    INVENTORY = "i"
+    KEY_Q = ("q", "й", ":")
+    SAVE_GAME = ("S", "Ы")
+    INVENTORY = ("i", "ш")
     HELP = ("?", "/")
-    REST = "r"
+    REST = ("r", "к")
 
     NUM_1 = ("1",)
     NUM_2 = ("2",)

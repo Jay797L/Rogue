@@ -49,6 +49,8 @@ class EnemyManager:
         for enemy in dead:
             if game:
                 self._award_treasure_for_kill(enemy, game)
+                game.record_enemy_killed()
+                game.record_enemy_killed()
 
             if self.map_manager and enemy.point in self.map_manager:
                 cell = self.map_manager[enemy.point]

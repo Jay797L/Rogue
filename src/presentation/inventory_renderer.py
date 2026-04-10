@@ -25,7 +25,7 @@ class InventoryRenderer:
             # Убеждаемся что арт имеет размер 5x5 или масштабируем
             if len(art) == 5 and all(len(line) == 5 for line in art):
                 return art
-        
+
         # Если своего арта нет, используем стандартный по категории
         if item.category == ItemCategory.EAT:
             return ["  █  ", " ███ ", "█████", "█████", " ███ "]
@@ -124,7 +124,7 @@ class InventoryRenderer:
 
                 for slot_index in range(9):
                     item = items[slot_index] if slot_index < len(items) else None
-                    
+
                     # Проверяем, экипировано ли это оружие
                     is_equipped_weapon = (
                         row == 3  # категория оружия
@@ -132,30 +132,24 @@ class InventoryRenderer:
                         and hasattr(game.player.backpack, "equipped_weapon_index")
                         and slot_index + 1 == game.player.backpack.equipped_weapon_index
                     )
-                    
+
                     # Проверяем, выбран ли этот слот
                     is_slot_selected = (
                         state.selected_slot_index is not None
                         and slot_index + 1 == state.selected_slot_index
                         and row == state.inventory_pointer
                     )
-                    
+
                     # Определяем атрибуты цвета для ячейки
                     if is_slot_selected:
                         # Выбранный слот - желтый
-                        attr_cell = (
-                            curses.A_BOLD
-                            | curses.color_pair(
-                                color_manager.get_color_pair_from_preset(ColorPreset.YELLOW)
-                            )
+                        attr_cell = curses.A_BOLD | curses.color_pair(
+                            color_manager.get_color_pair_from_preset(ColorPreset.YELLOW)
                         )
                     elif is_equipped_weapon:
                         # Экипированное оружие - красный
-                        attr_cell = (
-                            curses.A_BOLD
-                            | curses.color_pair(
-                                color_manager.get_color_pair_from_preset(ColorPreset.RED)
-                            )
+                        attr_cell = curses.A_BOLD | curses.color_pair(
+                            color_manager.get_color_pair_from_preset(ColorPreset.RED)
                         )
                     else:
                         # Обычная ячейка
