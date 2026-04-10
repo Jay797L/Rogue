@@ -32,13 +32,23 @@ class MenuRenderer:
             and self.last_width == width
             and self.logo_widget is not None
         ):
-            return False
+            return
 
-        self._update_logo_position(height, width)
+        if self.logo_widget is None:
+            self.logo_widget = Widget(
+                art=self.logo_art,
+                y=height // 6,
+                x=width // 2,
+                animator=self.logo_animator,
+                color_hex=ColorPreset.LOGO_GREEN.value,
+                bg_color_hex="transparent",
+            )
+        else:
+            self.logo_widget.y = height // 6
+            self.logo_widget.x = width // 2
 
         self.last_height = height
         self.last_width = width
-        return True
 
     def render(self, game: BaseGame, current_time: float):
 
