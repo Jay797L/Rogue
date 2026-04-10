@@ -41,6 +41,7 @@ class CursesGameView(BaseGameView):
         self.stats_card_width = 25
         self.right_panel_x = 0
         self.resize_pending = False
+        self.last_window_size = None
 
         game._game_view = self
 
@@ -82,23 +83,55 @@ class CursesGameView(BaseGameView):
         """Check if window size changed and handle it."""
         try:
             current_size = (curses.LINES, curses.COLS)
+            if self.last_window_size is None:
+                self.last_window_size = current_size
+                return
             if self.last_window_size != current_size:
                 self.last_window_size = current_size
+                # Force curses to reinitialize terminal after resize
+                curses.endwin()
+                curses.doupdate()
                 self._on_window_resize()
         except curses.error:
             pass  # Curses not fully initialized yet
 
     def _on_window_resize(self):
         """Handle window resize event."""
+        # Force curses to update its internal LINES/COLS after SIGWINCH
+        try:
+            curses.update_lines_cols()
+        except AttributeError:
+            # Fallback for older Python/curses implementations
+            pass
         logger.info(f"Window resized to {curses.LINES}x{curses.COLS}")
-        # Refresh display, redraw UI, etc.
-        if hasattr(self, "stdscr"):
-            try:
-                self.stdscr.clear()
-                self.stdscr.refresh()
-                # Call your existing resize/redraw logic here
-            except curses.error:
-                pass
+        if not hasattr(self, "stdscr"):
+            return
+        try:
+            # Update game screen dimensions immediately
+            max_y, max_x = self.stdscr.getmaxyx()
+            # For 3D mode, vision needs new dimensions
+            if self.game.is_3d_mode and hasattr(self.game, "_3d_vision_instance"):
+                self.game._3d_vision_instance.update_screen_dimensions(max_x, max_y)
+            # Clear ray caster cache to avoid stale blocking data
+            if hasattr(self.game, "level") and self.game.level and self.game.level.map_manager:
+                if hasattr(self.game.level.map_manager, "ray_caster") and self.game.level.map_manager.ray_caster:
+                    self.game.level.map_manager.ray_caster.clear_cache()
+            # Mark resize as pending to trigger full redraw in next _render
+            self.resize_pending = True
+            # Invalidate vision cache for both 2D and 3D
+            if hasattr(self.game, "_2d_vision_instance") and self.game._2d_vision_instance:
+                if hasattr(self.game._2d_vision_instance, "_initialized"):
+                    self.game._2d_vision_instance._initialized = False
+                if hasattr(self.game._2d_vision_instance, "_wrapped") and hasattr(self.game._2d_vision_instance._wrapped, "_initialized"):
+                    self.game._2d_vision_instance._wrapped._initialized = False
+            if hasattr(self.game, "_3d_vision_instance") and self.game._3d_vision_instance:
+                if hasattr(self.game._3d_vision_instance, "_initialized"):
+                    self.game._3d_vision_instance._initialized = False
+            # Clear screen to remove old artifacts
+            self.stdscr.clear()
+            self.stdscr.refresh()
+        except (curses.error, AttributeError) as e:
+            logger.debug(f"Error during window resize handling: {e}")
 
     def _signal_handler(self, signum, frame):
         """Обработчик Ctrl+C для корректного завершения."""
@@ -148,9 +181,10 @@ class CursesGameView(BaseGameView):
         if self.resize_pending:
             self.resize_pending = False
 
+            # Force clear and full refresh of terminal
             self.stdscr.clear()
             self.stdscr.refresh()
-
+            # Reset cached dimensions for UI components
             if self.menu_renderer:
                 self.menu_renderer.last_height = 0
                 self.menu_renderer.last_width = 0
@@ -163,6 +197,22 @@ class CursesGameView(BaseGameView):
                 self.about_renderer.last_height = 0
                 self.about_renderer.last_width = 0
                 self.about_renderer.logo_widget = None
+            # Invalidate vision cache for both 2D and 3D
+            if hasattr(self.game, "_2d_vision_instance") and self.game._2d_vision_instance:
+                if hasattr(self.game._2d_vision_instance, "_initialized"):
+                    self.game._2d_vision_instance._initialized = False
+                if hasattr(self.game._2d_vision_instance, "_wrapped") and hasattr(self.game._2d_vision_instance._wrapped, "_initialized"):
+                    self.game._2d_vision_instance._wrapped._initialized = False
+            if hasattr(self.game, "_3d_vision_instance") and self.game._3d_vision_instance:
+                if hasattr(self.game._3d_vision_instance, "_initialized"):
+                    self.game._3d_vision_instance._initialized = False
+            # Clear ray caster cache again
+            if hasattr(self.game, "level") and self.game.level and self.game.level.map_manager:
+                if hasattr(self.game.level.map_manager, "ray_caster") and self.game.level.map_manager.ray_caster:
+                    self.game.level.map_manager.ray_caster.clear_cache()
+            # Also update game screen dimensions based on new terminal size
+            max_y, max_x = self.stdscr.getmaxyx()
+            self.game.update_screen_size(max_x, max_y)
 
         current_time = time.time() - self.start_time
 

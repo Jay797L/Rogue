@@ -138,7 +138,25 @@ class AboutRenderer:
         text_start_y = height // 3 + 2
         text_start_x = max(5, (width - 60) // 2)
         text_width = min(60, width - 10)
-        self.viewport_height = height - text_start_y - 3
+        self.viewport_height = max(0, height - text_start_y - 3)
+
+        if self.viewport_height <= 0:
+            # Terminal too small to show text area; only logo and prompt remain
+            prompt_y = height - 2
+            prompt = "↑/↓ or W/S or K/J - scroll, Q - back to menu"
+            prompt_x = (width - len(prompt)) // 2
+            if prompt_y >= 0 and prompt_x >= 0:
+                prompt_color = color_manager.get_color_pair_from_preset(
+                    ColorPreset.DIM_TEXT
+                )
+                self.stdscr.addstr(
+                    prompt_y,
+                    prompt_x,
+                    prompt,
+                    curses.A_DIM | curses.color_pair(prompt_color),
+                )
+            self.stdscr.refresh()
+            return
 
         color_manager.get_color_pair_from_preset(ColorPreset.BORDER)
         try:

@@ -34,18 +34,7 @@ class MenuRenderer:
         ):
             return False
 
-        if self.logo_widget is None:
-            self.logo_widget = Widget(
-                art=self.logo_art,
-                y=height // 4,
-                x=width // 2,
-                animator=self.logo_animator,
-                color_hex=ColorPreset.LOGO_GREEN.value,
-                bg_color_hex="transparent",
-            )
-        else:
-            self.logo_widget.y = height // 4
-            self.logo_widget.x = width // 2
+        self._update_logo_position(height, width)
 
         self.last_height = height
         self.last_width = width
@@ -61,18 +50,7 @@ class MenuRenderer:
 
         height, width = self.stdscr.getmaxyx()
 
-        if self.logo_widget is None:
-            self.logo_widget = Widget(
-                art=self.logo_art,
-                y=height // 4,
-                x=width // 2,
-                animator=self.logo_animator,
-                color_hex=ColorPreset.LOGO_GREEN.value,
-                bg_color_hex="transparent",
-            )
-        else:
-            self.logo_widget.y = height // 4
-            self.logo_widget.x = width // 2
+        self._update_logo_position(height, width)
 
         if self.logo_widget:
             self.stdscr.attrset(0)
